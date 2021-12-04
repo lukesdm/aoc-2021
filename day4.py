@@ -1,5 +1,5 @@
+from functools import reduce
 from typing import Dict
-
 
 class Board:
     def __init__(self, id, numbers: Dict):
@@ -13,7 +13,7 @@ def parseBoard(lines, boardId):
     for row in range(0, len(lines)):
         col = 0
         for num in lines[row].strip().split():
-            nums[int(num)] = (row, col)
+            nums[int(num)] = (row, col, False)
             col = col + 1
     return Board(boardId, nums)
 
@@ -35,16 +35,23 @@ def has5(x):
 
 def checkBoard(board: Board, pick):
     if pick in board.numbers:
-        row, col = board.numbers[pick]
+        row, col, _ = board.numbers[pick]
+        board.numbers[pick] = (row, col, True)
         board.rowMarks[row] += 1
         board.colMarks[col] += 1
     return any(filter(has5, board.rowMarks)) or any(filter(has5, board.colMarks))
 
-# def calcScore(board: Board):
+def unmarked(item):
+    _, (_, _, marked) = item
+    return not marked
 
+def calcScore(board: Board, pick):
+    remaining = filter(unmarked, board.numbers.items())
+    # would like to use sum() here but can't unpack keys from filtered items
+    return reduce(lambda acc, item: item[0] + acc, remaining, 0) * pick
 
 input = None
-filename = "day4-sample.txt" # "day4-input.txt" 
+filename = "day4-input.txt" # "day4-sample.txt"
 with open(filename) as reader:
     input = reader.readlines()
 
@@ -62,5 +69,5 @@ for pick in picks:
         break
 
 print(board.id)
-result = calcScore(board)
+result = calcScore(board, pick)
 print(result)
