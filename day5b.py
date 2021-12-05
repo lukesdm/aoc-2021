@@ -26,19 +26,23 @@ for txt in input:
     line = parse(txt)
     lines.append(line)
 
+def direction(line):
+    x1, y1, x2, y2 = line
+    dx = 0 if x2 == x1 else 1 if x2 > x1 else -1
+    dy = 0 if y2 == y1 else 1 if y2 > y1 else -1
+    return dx, dy  
+
 def points(line):
     x1, y1, x2, y2 = line
-
-    if is_h_line(line):
-        xs = x1 if x1 <= x2 else x2
-        xe = x2 if x1 <= x2 else x1
-        for x in range(xs, xe + 1): 
-            yield x, y1
-    elif is_v_line(line):
-        ys = y1 if y1 <= y2 else y2
-        ye = y2 if y1 <= y2 else y1
-        for y in range(ys, ye + 1):
-            yield x1, y
+    dx, dy = direction(line)
+    xs, xend = (x1, x2) if x1 <= x2 else (x2, x1)
+    ys, yend = (y1, y2) if y1 <= y2 else (y2, y1)
+    x = x1
+    y = y1
+    while xs <= x <= xend and ys <= y <= yend:
+        yield x, y
+        x += dx
+        y += dy
 
 grid = {}
 for line in lines:
