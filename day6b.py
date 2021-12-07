@@ -12,12 +12,12 @@ with open(filename) as reader:
     input = reader.read()
 
 # fishList = list(map(int, input.strip().split(",")))
-fishList = [3]
+fishList = [8]
 
 print(fishList)
 
-for i in range(0,256):
-    print(i)
+for i in range(0,51):
+    print(f"({i}, {len(fishList)}),")
     tick(fishList)
 
 # print(fishList)
